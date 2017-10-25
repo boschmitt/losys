@@ -1,0 +1,5 @@
+# Building directories
+/build/
+/third-party/abc/
+.DS_Store
+.clang_complete
