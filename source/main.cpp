@@ -13,12 +13,13 @@ extern "C" {
 
 static void usage(int status)
 {
-	if (status == EXIT_FAILURE)
+	if (status == EXIT_FAILURE) {
 		fprintf(stdout, "Try '-h' for more information\n");
-	else
+	} else {
 		fprintf(stdout, "Usage: <cmd> [-h] <input_file>\n\n" \
 		        "Options:\n"\
-		        "\t-h"     "\t : display available options.\n");
+		        "\t-h\t : display available options.\n");
+	}
 	exit(status);
 }
 

@@ -75,8 +75,9 @@ struct cube32 {
 	c32_t operator&(const c32_t that) const
 	{
 		const auto tmp_mask = mask & that.mask;
-		if ((polarity ^ that.polarity) & tmp_mask)
+		if ((polarity ^ that.polarity) & tmp_mask) {
 			return cube32{0xFFFFFFFFu, 0x00000000u};
+		}
 		return cube32{value | that.value};
 	}
 
