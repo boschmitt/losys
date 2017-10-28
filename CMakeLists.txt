@@ -8,6 +8,12 @@ if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# Definitions
+# =============================================================================
+set(third_party_include_dir "${PROJECT_SOURCE_DIR}/third-party")
+set(losys_include_dirs "${PROJECT_SOURCE_DIR}/source")
+set(losys_test_include_dirs ${losys_include_dirs} ${third_party_include_dir})
+
 # Dependencies
 # =============================================================================
 add_subdirectory(third-party)
@@ -15,6 +21,10 @@ add_subdirectory(third-party)
 # Project soruce files
 # =============================================================================
 add_subdirectory(source)
+
+# Project tools
+# =============================================================================
+add_subdirectory(tools)
 
 # Auxiliary
 # =============================================================================
@@ -28,10 +38,6 @@ endfunction()
 
 # Tests
 # =============================================================================
-set(third_party_include_dir "${PROJECT_SOURCE_DIR}/third-party")
-set(losys_include_dirs ${PROJECT_SOURCE_DIR}/source)
-set(losys_test_include_dirs ${losys_include_dirs} ${third_party_include_dir})
-
 enable_testing()
 add_custom_target(check
   COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
