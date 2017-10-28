@@ -2,7 +2,8 @@
 | This file is distributed under the BSD 2-Clause License.
 | See LICENSE for details.
 *-----------------------------------------------------------------------------*/
-#pragma once
+#ifndef LOSYS_CUBE32_HPP
+#define LOSYS_CUBE32_HPP
 
 #include <cassert>
 #include <cstdint>
@@ -94,3 +95,5 @@ constexpr auto cube32_zero = cube32{0xFFFFFFFFu, 0x00000000u};
 constexpr auto cube32_one  = cube32{0u, 0u};
 
 } // namespace lsy
+
+#endif
