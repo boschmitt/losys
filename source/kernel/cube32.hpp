@@ -37,6 +37,7 @@ struct cube32 {
 	using ui64_t = std::uint64_t;
 	using c32_t  = struct cube32;
 
+	/* TODO: C++17 consider using variant */
 	union {
 		struct {
 			ui32_t polarity;
@@ -49,7 +50,7 @@ struct cube32 {
 	: value{0u}
 	{ }
 
-	cube32(const ui64_t v)
+	explicit cube32(const ui64_t v)
 	: value{v}
 	{ }
 
