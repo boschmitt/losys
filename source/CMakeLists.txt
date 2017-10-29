@@ -2,7 +2,7 @@
 # CMake build : losys project
 
 set(losys_src_files
-  # ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/opt/exorcism32.cpp
   PARENT_SCOPE
   )
 

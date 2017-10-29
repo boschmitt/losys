@@ -9,6 +9,7 @@
 
 #include "io/read_pla.hpp"
 #include "kernel/two_lvl32.hpp"
+#include "opt/exorcism32.hpp"
 
 static void
 usage(int status)
@@ -82,8 +83,15 @@ main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
-	auto pla = lsy::read_pla<lsy::two_lvl32>(in_fname, (verbose || werbose));
-	print_stats(pla);
+	auto original = lsy::read_pla<lsy::two_lvl32>(in_fname, verbose | werbose);
+	auto result   = lsy::exorcise(original, werbose);
+	if (verbose | werbose) {
+		fprintf(stdout, "ORIGINAL: "), print_stats(original);
+		fprintf(stdout, "RESULT:   "), print_stats(result);
+	}
+	// TODO: implement write_pla
+	//if (out_fname)
+		// exorcism::write_pla(result, out_fname);
 
 	return EXIT_SUCCESS;
 }

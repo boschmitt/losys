@@ -96,6 +96,36 @@ struct cube32 {
 constexpr auto cube32_zero = cube32{0xFFFFFFFFu, 0x00000000u};
 constexpr auto cube32_one  = cube32{0u, 0u};
 
+/*------------------------------------------------------------------------------
+| Returns a bitmap indicating the variables for which the corresponding
+| literals have different values.
+*-----------------------------------------------------------------------------*/
+static std::uint32_t difference(const cube32 lhs, const cube32 rhs)
+{ return (lhs.polarity ^ rhs.polarity) | (lhs.mask ^ rhs.mask); }
+
+/*------------------------------------------------------------------------------
+| The distance of two cubes is the number of variables for which the
+| corresponding literals have different values.
+*-----------------------------------------------------------------------------*/
+static std::uint32_t distance(const cube32 lhs, const cube32 rhs)
+{ return __builtin_popcount(difference(lhs, rhs)); }
+
+/*------------------------------------------------------------------------------
+| TODO
+*-----------------------------------------------------------------------------*/
+static cube32 merge(const cube32 lhs, const cube32 rhs)
+{
+	const auto diff = difference(lhs, rhs);
+	return cube32(lhs.mask ^ (rhs.mask & diff),
+	              lhs.polarity ^ (~rhs.polarity & diff));
+}
+
+struct cube32_hash {
+	std::size_t operator()(const cube32 &c) const {
+		return std::hash<std::uint64_t>()(c.value);
+	}
+};
+
 } // namespace lsy
 
 #endif
