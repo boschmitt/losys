@@ -7,6 +7,8 @@
 
 #include <cassert>
 #include <cstdint>
+#include <cstddef>
+#include <functional>
 
 namespace lsy {
 
