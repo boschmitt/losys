@@ -96,6 +96,7 @@ PLA read_pla(const char *fname, bool verbose)
 	std::tie(n_inputs, n_outputs, n_terms, type) = read_pla_header(buffer);
 	two_lvl.kind(type);
 	two_lvl.n_inputs(n_inputs);
+	two_lvl.n_outputs(n_outputs);
 
 	/* Parsing cubes */
 	auto n_cubes = 0;

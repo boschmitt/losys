@@ -24,7 +24,7 @@ namespace lsy {
 | which is a Boolean OR of cubes, or as exclusive-sum of products (ESOP) which
 | is a Boolean XOR of cubes.
 |
-| TODO: add support for multiple output functions.
+| FIXME: support for multiple output functions.
 *-----------------------------------------------------------------------------*/
 struct two_lvl32 {
 	enum class kind_t {
@@ -35,11 +35,16 @@ struct two_lvl32 {
 
 	kind_t _kind;
 	std::uint32_t _n_inputs;
-	std::vector<cube32> _cubes;
+	std::vector<std::vector<cube32>> _cubes;
 
 	void n_inputs(const std::uint32_t n_in)
 	{
 		_n_inputs = n_in;
+	}
+
+	void n_outputs(const std::uint32_t n_out)
+	{
+		_cubes.resize(n_out);
 	}
 
 	void kind(const std::string &k)
@@ -63,20 +68,25 @@ struct two_lvl32 {
 			case '0': cube.add_lit(i, 0); break;
 			}
 		}
-		_cubes.push_back(cube);
+		for (auto i = 0u; i < out.size(); ++i) {
+			if (out[i] == '1') {
+				_cubes[i].push_back(cube);
+			}
+		}
 	}
 };
 
 static void print_stats(const two_lvl32 &fnt)
 {
 	if (fnt._kind == two_lvl32::kind_t::SOP) {
-		fprintf(stdout, "[Two-level SOP] ");
+		fprintf(stdout, "[Two-level SOP]\n");
 	} else if (fnt._kind == two_lvl32::kind_t::ESOP) {
-		fprintf(stdout, "[Two-level ESOP] ");
+		fprintf(stdout, "[Two-level ESOP]\n");
 	} else {
-		fprintf(stdout, "[Two-level] ");
+		fprintf(stdout, "[Two-level]\n");
 	}
-	fprintf(stdout, "Cubes : %5lu\n", fnt._cubes.size());
+	for (auto i = 0; i < fnt._cubes.size(); ++i)
+		fprintf(stdout, "[%d] Cubes : %5lu\n", i, fnt._cubes[i].size());
 }
 } // namespace lsy
 

@@ -63,8 +63,13 @@ private:
 
 static two_lvl32 exorcise(const two_lvl32 &original, bool verbose = false)
 {
-	exorcism_mngr exor(original._cubes, original._n_inputs, verbose);
-	auto ret = exor.run();
+	printf("[i] Exorcism\n");
+	std::vector<std::vector<cube32>> ret;
+	for (auto &esop : original._cubes) {
+		exorcism_mngr exor(esop, original._n_inputs, verbose);
+		ret.push_back(exor.run());
+
+	}
 	return {original._kind, original._n_inputs, ret};
 }
 
