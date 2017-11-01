@@ -95,6 +95,16 @@ struct cube32 {
 		polarity |= (p << var);
 	}
 
+	void invert()
+	{ polarity ^= mask; }
+
+	void rotate(const std::uint32_t var)
+	{
+		auto tmp = mask ^ (~polarity & (1 << var));
+		polarity ^= ~(polarity ^ mask) & (1 << var);
+		mask = tmp;
+	}
+
 	std::string str(const std::uint32_t n_inputs) const
 	{
 		std::string s;
