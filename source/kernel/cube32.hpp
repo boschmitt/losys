@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <functional>
+#include <string>
 
 namespace lsy {
 
@@ -92,6 +93,20 @@ struct cube32 {
 		assert(p <= 1);
 		mask |= (1 << var);
 		polarity |= (p << var);
+	}
+
+	std::string str(const std::uint32_t n_inputs) const
+	{
+		std::string s;
+		for (auto i = 0; i < n_inputs; ++i) {
+			if (((mask >> i) & 1) == 0) {
+				s.push_back('-');
+			} else if (polarity & (1 << i))
+				s.push_back('1');
+			else
+				s.push_back('0');
+		}
+		return s;
 	}
 };
 
