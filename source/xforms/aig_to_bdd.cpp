@@ -89,6 +89,11 @@ std::pair<Cudd, std::vector<BDD>> aig_to_bdd(Gia_Man_t *aig, int verbose)
 		const auto c = Gia_ObjFaninC0(obj);
 		outputs.push_back(c ? !b : b);
 		test(bdd_mngr.getManager(), outputs.back().getNode());
+		fprintf(stdout, "[%d] ", i);
+		if (outputs.back().getNode() == NULL) {
+			fprintf(stdout, "empty DD.\n");
+			continue;
+		}
 		outputs.back().summary(Gia_ManCiNum(aig));
 		// outputs.back().PrintCover();
 	}
