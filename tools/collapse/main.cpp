@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 	}
 
 	if (data) {
-		spdlog::basic_logger_mt("data", filename + ".csv")->set_pattern("%v");
+		spdlog::basic_logger_mt("data", method + "_" + filename + ".csv")->set_pattern("%v");
 	}
 	/* Cofactor the original AIG */
 	Gia_Man_t *cf_aigs[(1 << n_cofactor)];
@@ -166,7 +166,7 @@ int main(int argc, char **argv)
 		print_stats(result);
 	}
 
-	lsy::write_pla(filename, result);
+	lsy::write_pla(method + "_" + filename, result);
 	if (check) {
 		auto result_aig = lsy::esop_to_aig(result);
 		Dar_LibStart();
