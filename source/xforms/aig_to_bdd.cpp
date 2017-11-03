@@ -72,16 +72,16 @@ std::pair<Cudd, std::vector<BDD>> aig_to_bdd(Gia_Man_t *aig, int verbose)
 		const auto b2 = nodes[Gia_ObjFaninId1(obj, i)];
 		const auto c2 = Gia_ObjFaninC1(obj);
 		nodes[i] = (c1 ? !b1 : b1) & (c2 ? !b2 : b2);
-		// printf("%d, %d\n", Gia_ObjFaninId0(obj, i), Gia_ObjFaninId1(obj, i));
 		if (verbose) {
 			fprintf(stdout, "\rNode %4d / %4d", i, nodes.size());
 			fflush(stdout);
 		}
 	}
 	//bdd_mngr.ReduceHeap();
-	//fprintf(stdout, "Done\n");
 	//bdd_mngr.ReduceHeap(CUDD_REORDER_EXACT);
-	//fprintf(stdout, "Done\n");
+	if (verbose) {
+		fprintf(stdout, " Done\n");
+	}
 	/* Outputs */
 	std::vector<BDD> outputs;
 	Gia_ManForEachCo(aig, obj, i) {
@@ -89,8 +89,7 @@ std::pair<Cudd, std::vector<BDD>> aig_to_bdd(Gia_Man_t *aig, int verbose)
 		const auto c = Gia_ObjFaninC0(obj);
 		outputs.push_back(c ? !b : b);
 		test(bdd_mngr.getManager(), outputs.back().getNode());
-		// printf("%llu,", bdd_mngr.ReadNodeCount());
-		// printf("%llu\n", ::Cudd_DagSize(outputs.back().getNode()));
+		outputs.back().summary(Gia_ManCiNum(aig));
 		// outputs.back().PrintCover();
 	}
 	fprintf(stdout, " [Done]\n");
