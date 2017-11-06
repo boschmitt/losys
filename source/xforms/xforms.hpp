@@ -14,7 +14,7 @@ extern "C" {
 
 namespace lsy {
 
-std::pair<Cudd, std::vector<BDD>> aig_to_bdd(Gia_Man_t *, int);
+std::pair<Cudd, std::vector<BDD>> aig_to_bdd(Gia_Man_t *, bool, int);
 Gia_Man_t *esop_to_aig(const two_lvl32 &);
 
 }

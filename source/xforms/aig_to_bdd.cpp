@@ -53,14 +53,16 @@ static inline int test(DdManager *dd, DdNode *l)
 	return 1;
 }
 
-std::pair<Cudd, std::vector<BDD>> aig_to_bdd(Gia_Man_t *aig, int verbose)
+std::pair<Cudd, std::vector<BDD>> aig_to_bdd(Gia_Man_t *aig, bool reorder, int verbose)
 {
 	uint32_t i, id;
 	Gia_Obj_t* obj;
 	Cudd bdd_mngr;
 	std::vector<BDD> nodes(Gia_ManObjNum(aig));
 
-	//bdd_mngr.AutodynEnable();
+	if (reorder) {
+		bdd_mngr.AutodynEnable();
+	}
 	//bdd_mngr.AutodynEnable(CUDD_REORDER_EXACT);
 	printf("[i] Converting AIG to BDD\n");
 	Gia_ManForEachCiId(aig, id, i) {
@@ -98,7 +100,9 @@ std::pair<Cudd, std::vector<BDD>> aig_to_bdd(Gia_Man_t *aig, int verbose)
 		// outputs.back().PrintCover();
 	}
 	fprintf(stdout, " [Done]\n");
-	//bdd_mngr.AutodynDisable();
+	if (reorder) {
+		bdd_mngr.AutodynDisable();
+	}
 	return std::make_pair(bdd_mngr, outputs);
 }
 

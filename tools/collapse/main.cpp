@@ -72,11 +72,13 @@ int main(int argc, char **argv)
 	auto check    = false;
 	auto data     = false;
 	auto exorcise = false;
+	auto reorder  = false;
 	auto verbose  = false;
 	auto werbose  = false;
 	app.add_flag("-c,--check", check, "use ABC's cec to check the result.");
 	app.add_flag("-d,--data_collect", data, "turn on data collection mode.");
 	app.add_flag("-e,--exorcise", exorcise, "apply exorcism in the collapsed result.");
+	app.add_flag("-r,--reorder", reorder, "BDD automatic variables reordering.");
 	app.add_flag("-v,--verbose", verbose, "verbose mode.");
 	app.add_flag("-w,--werbose", werbose, "very verbose mode");
 	app.add_option("-f,--cofactors", n_cofactor,
@@ -132,7 +134,7 @@ int main(int argc, char **argv)
 		console->info("[{} / {}] AIG", i, ((1 << n_cofactor) - 1));
 		lsy::two_lvl32 ex_result;
 		if (method == "bdd") {
-			auto bdd = lsy::aig_to_bdd(a, verbose);
+			auto bdd = lsy::aig_to_bdd(a, reorder, verbose);
 			cf_results.push_back(lsy::bdd_extract(bdd));
 		} else {
 			cf_results.push_back(lsy::aig_extract(a, verbose));
