@@ -22,7 +22,7 @@ psdkro::psdkro(DdManager *cudd, uint32_t size)
 	: m_cudd(cudd), m_var_values(size, UNUSED)
 { }
 
-std::vector<cube32> psdkro::generate_exact(DdNode *f)
+std::vector<cube32> psdkro::extract_esop(DdNode *f)
 {
 	if (f == NULL)
 		return {};
@@ -30,7 +30,7 @@ std::vector<cube32> psdkro::generate_exact(DdNode *f)
 	m_esop.clear();
 	std::fill(m_var_values.begin(), m_var_values.end(), UNUSED);
 	count_cubes(f);
-	generate_exact(f, -1);
+	generate_exact(f);
 	std::vector<cube32> ret;
 	std::copy(m_esop.begin(), m_esop.end(), std::back_inserter(ret));
 	return ret;
@@ -75,16 +75,16 @@ void psdkro::add_cube(const cube32 c)
 	m_esop.insert(c1);
 }
 
-void psdkro::generate_exact(DdNode *f, int prev_idx)
+void psdkro::generate_exact(DdNode *f)
 {
 	/* Terminal cases */
 	if (f == Cudd_ReadLogicZero(m_cudd))
 		return;
 	if (f == Cudd_ReadOne(m_cudd)) {
 		cube32 cube(0u);
-		for (auto i = 0; i < prev_idx + 1; ++i) {
-			cube.mask |= ((m_var_values[i] != UNUSED) << i);
-			cube.polarity |= ((m_var_values[i] == POSITIVE) << i);
+		for (auto var : m_vars) {
+			cube.mask |= ((m_var_values[var] != UNUSED) << var);
+			cube.polarity |= ((m_var_values[var] == POSITIVE) << var);
 		}
 		// add_cube(cube);
 		m_esop.insert(cube);
@@ -96,10 +96,7 @@ void psdkro::generate_exact(DdNode *f, int prev_idx)
 
 	/* Determine the top-most variable */
 	auto idx = Cudd_NodeReadIndex(f);
-	/* Clear intermediate variables that have not been used */
-	for (auto i = prev_idx + 1; i < idx; ++i) {
-		m_var_values[i] = UNUSED;
-	}
+	m_vars.push_back(idx);
 
 	/* Determine cofactors */
 	DdNode *f0 = Cudd_NotCond(Cudd_E(f), Cudd_IsComplement(f));
@@ -110,20 +107,22 @@ void psdkro::generate_exact(DdNode *f, int prev_idx)
 	/* Generate cubes in the left/right branches */
 	if (expension == POSITIVE_DAVIO) {
 		m_var_values[idx] = UNUSED;
-		generate_exact(f0, idx);
+		generate_exact(f0);
 		m_var_values[idx] = POSITIVE;
-		generate_exact(f2, idx);
+		generate_exact(f2);
 	} else if (expension == NEGATIVE_DAVIO) {
 		m_var_values[idx] = UNUSED;
-		generate_exact(f1, idx);
+		generate_exact(f1);
 		m_var_values[idx] = NEGATIVE;
-		generate_exact(f2, idx);
+		generate_exact(f2);
 	} else { /* SHANNON */
 		m_var_values[idx] = NEGATIVE;
-		generate_exact(f0, idx);
+		generate_exact(f0);
 		m_var_values[idx] = POSITIVE;
-		generate_exact(f1, idx);
+		generate_exact(f1);
 	}
+	m_vars.pop_back();
+	m_var_values[idx] = UNUSED;
 	Cudd_RecursiveDeref(m_cudd, f2);
 }
 

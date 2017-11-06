@@ -28,7 +28,7 @@ namespace lsy {
 class psdkro {
 public:
 	psdkro(DdManager *, std::uint32_t);
-	std::vector<cube32> generate_exact(DdNode *);
+	std::vector<cube32> extract_esop(DdNode *);
 
 private:
 	enum var_value : std::uint8_t {
@@ -43,13 +43,14 @@ private:
 	};
 
 	void add_cube(const cube32);
-	void generate_exact(DdNode *, int);
+	void generate_exact(DdNode *);
 
 	/* Recursive function */
 	std::pair<exp_type, std::uint32_t> count_cubes(DdNode *);
 
 private:
 	DdManager *m_cudd;
+	std::vector<std::uint32_t> m_vars;
 	std::vector<var_value> m_var_values;
 	std::map<DdNode *, std::pair<exp_type, std::uint32_t>> m_exp_costs;
 	std::unordered_set<cube32, cube32_hash> m_esop;
@@ -66,7 +67,7 @@ static two_lvl32 bdd_extract(std::pair<Cudd, std::vector<BDD>> &bdd)
 	std::vector<std::vector<cube32>> fncts;
 	auto start = std::chrono::high_resolution_clock::now();
 	for (auto &i : bdd.second) {
-		fncts.push_back(mngr.generate_exact(i.getNode()));
+		fncts.push_back(mngr.extract_esop(i.getNode()));
 	}
 	std::chrono::duration<double> bdd2esop_time =
 		std::chrono::high_resolution_clock::now() - start;
